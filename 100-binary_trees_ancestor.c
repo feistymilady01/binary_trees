@@ -1,48 +1,29 @@
 #include "binary_trees.h"
 
-
 /**
- * depth - measures the depth of a node in a binary tree
+ * binary_trees_ancestor - Finds the lowest common ancestor of two nodes.
  *
- * @tree: pointer to the node to measure the depth
+ * @first: A pointer to the first node.
+ * @second: A pointer to the second node.
  *
- * Return: 0 if tree id NULL, otherwise the depth in size_t
+ * Return: A pointer to the lowest common ancestor node of the two given nodes.
+ *         If no common ancestor was found, your function must return NULL.
  */
-
-size_t depth(const binary_tree_t *tree)
-{
-	if (!tree || !tree->parent)
-		return (0);
-
-	return (depth(tree->parent) + 1);
-}
-
-
-/**
- * binary_trees_ancestor - finds the lowest common ancestor of two nodes
- *
- * @first: pointer to the first node
- * @second: pointer to the second node
- *
- * Return: pointer to the lowest common ancestor of th two nodes,
- *	otherwise NULL
- */
-
 binary_tree_t *binary_trees_ancestor(const binary_tree_t *first,
-const binary_tree_t *second)
+		const binary_tree_t *second)
 {
+	binary_tree_t *mom, *pop;
+
 	if (!first || !second)
 		return (NULL);
-
 	if (first == second)
-		return ((binary_tree_t *)second);
+		return ((binary_tree_t *)first);
 
-	if (depth(first) > depth(second))
-		return (binary_trees_ancestor(first->parent, second));
+	mom = first->parent, pop = second->parent;
+	if (first == pop || !mom || (!mom->parent && pop))
+		return (binary_trees_ancestor(first, pop));
+	else if (mom == second || !pop || (!pop->parent && mom))
+		return (binary_trees_ancestor(mom, second));
 
-	else if (depth(first) < depth(second))
-		return (binary_trees_ancestor(first, second->parent));
-
-	else
-		return (binary_trees_ancestor(first->parent, second->parent));
+	return (binary_trees_ancestor(mom, pop));
 }
